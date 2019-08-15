@@ -3,6 +3,7 @@ import os
 import requests
 import dotenv
 import socket
+import json
 
 def pokemon_show(request, pk):
     api_url = f"http://pokeapi.co/api/v2/pokemon/{pk}/"
@@ -17,7 +18,7 @@ def pokemon_show(request, pk):
     path = '/v1/gifs/search'
     pokemon_query = pokemon_name
     limit = 1
-    offet = 0
+    offset = 0
 
     url = (f"{root}{path}?api_key={key}&q={pokemon_query}&limit=(int{limit})&offset=(int{offset})")
     giphy_res = requests.get(url)
@@ -26,7 +27,7 @@ def pokemon_show(request, pk):
 
     response = requests.get(url)
     gif_body = json.loads(response.content)
-    gif = body["data"][0]["url"]
+    gif = gif_body['data'][0]['images']['fixed_height_still']['url']
     
     
     return JsonResponse({ "id": pokemon_id, "name": pokemon_name, "types": pokemon_type, "gif": gif})
