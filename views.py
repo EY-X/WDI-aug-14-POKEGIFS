@@ -2,6 +2,7 @@ from django.http import JsonResponse
 import os 
 import requests
 import dotenv
+import socket
 
 def pokemon_show(request, pk):
     api_url = f"http://pokeapi.co/api/v2/pokemon/{pk}/"
@@ -15,13 +16,20 @@ def pokemon_show(request, pk):
     root = 'https://api.giphy.com'
     path = '/v1/gifs/search'
     pokemon_query = pokemon_name
+    limit = 1
+    offet = 0
 
-    url = (f"{root}{path}?api_key={key}&q={pokemon_query}")
+    url = (f"{root}{path}?api_key={key}&q={pokemon_query}&limit=(int{limit})&offset=(int{offset})")
     giphy_res = requests.get(url)
     body = json.loads(giphy_res.content)
     gif_url = body['data'][0]['url']
 
-    return JsonResponse({ "id": pokemon_id, "name": pokemon_name, "types": pokemon_type})
+    response = requests.get(url)
+    gif_body = json.loads(response.content)
+    gif = body["data"][0]["url"]
+    
+    
+    return JsonResponse({ "id": pokemon_id, "name": pokemon_name, "types": pokemon_type, "gif": gif})
 
     
     
